@@ -71,13 +71,14 @@ pipeline {
                         bat 'docker rm -f client server mongodb || exit /b 0'
                     }
                 }
-                script { runCmd 'docker compose up -d' }
+                // Sous Windows, le service Jenkins utilise docker-compose.exe (fourni par Docker Desktop)
+                script { runCmd(isUnix() ? 'docker compose up -d' : 'docker-compose up -d') }
             }
         }
 
         stage('Verify') {
             steps {
-                script { runCmd 'docker compose ps' }
+                script { runCmd(isUnix() ? 'docker compose ps' : 'docker-compose ps') }
                 script { runCmd 'docker images' }
             }
         }
