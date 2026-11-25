@@ -14,7 +14,7 @@ Ce TP containerise une application MERN : MongoDB (base de données), Express/No
 ## Structure du projet
 
 ```
-MyAppReact/
+tp4-docker/
 ├── Client/                 # Application React (Vite)
 │   ├── Dockerfile
 │   ├── .dockerignore
@@ -272,13 +272,14 @@ Le fichier `Jenkinsfile` à la racine automatise tout le processus. Il fonctionn
 | Build Server Image | `docker build -t mern-server -t <user>/mern-server:latest ./Server` |
 | Build Client Image | `docker build -t mern-client -t <user>/mern-client:latest ./Client` |
 | Push Images to Docker Hub | Connexion à Docker Hub avec les identifiants Jenkins, puis `docker push` des deux images |
-| Deploy with Docker Compose | Supprime les anciens conteneurs puis `docker compose up -d` |
-| Verify | `docker compose ps` et `docker images` |
+| Deploy with Docker Compose | Supprime les anciens conteneurs puis `docker compose up -d` (`docker-compose up -d` sous Windows) |
+| Verify | `docker compose ps` (`docker-compose ps` sous Windows) et `docker images` |
 
 ### Configuration de Jenkins
 
 1. Plugins nécessaires : **Pipeline**, **Git** et **Credentials Binding** (installés par défaut avec les « plugins suggérés »).
 2. La machine Jenkins doit avoir Docker installé et en marche (Docker Desktop sous Windows).
+   Sous Windows, Jenkins tourne comme service et ne trouve pas Docker par défaut (erreur « 'docker' n'est pas reconnu »). Il faut ajouter le dossier de Docker au PATH de Jenkins : *Manage Jenkins → System → Global properties → Environment variables* → nom `PATH+DOCKER`, valeur `C:\Users\<utilisateur>\AppData\Local\Programs\DockerDesktop\resources\bin`. Le plugin `docker compose` n'étant pas visible par le service, le Jenkinsfile utilise `docker-compose.exe` (fourni par Docker Desktop) sous Windows.
 3. Créer les identifiants Docker Hub : *Manage Jenkins → Credentials → System → Global credentials → Add Credentials*
    - Kind : *Username with password*
    - Username : nom d'utilisateur Docker Hub
